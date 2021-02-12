@@ -47,4 +47,45 @@ corpus <- tm_map(corpus, removeNumbers)
 corpus <- tm_map(corpus, removeWords, stopwords("en"))
 
 
+## represent the words as numbers
+## -------------------------------------------------
+
+## Bag of Words - for each word, how many times did it appear?
+## -----------------------------------------
+
+dtm <- DocumentTermMatrix(corpus)
+dtm
+
+inspect(dtm)
+
+## Sparse Matrices
+## document lengths; word counts
+dtm.mat <- as.matrix(dtm)
+document_length<- rowSums(dtm.mat)
+document_length
+head(sort(document_length, decreasing = TRUE), n = 10)
+word_counts <- colSums(dtm.mat)
+sorted <- sort(word_counts, decreasing = TRUE)
+head(sorted)
+
+## Term Frequency Inverse Document Frequency
+## -------------------------------------------
+## TF-IDF formula:
+## tfidft(t,d,D) = tf(t,d) * idf(t,D)
+
+## weighted dtm
+tfidf_dtm <- weightTfIdf(dtm, normalize = TRUE)
+
+## inspect
+inspect(tfidf_dtm)
+
+## compare most important terms for a given abstract
+tf <- dtm.mat[10,]
+most_important_tf = head(sort(tf, decreasing = TRUE), n = 10)
+
+tfidf_dtm.mat <- as.matrix(tfidf_dtm)
+tfidf <- tfidf_dtm.mat[10,]
+most_important_tfidf <- head(sort(tfidf, decreasing = TRUE, n = 10))
+most_important_tfidf
+
 
